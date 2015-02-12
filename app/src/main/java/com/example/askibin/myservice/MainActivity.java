@@ -4,11 +4,9 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
@@ -82,6 +80,9 @@ public class MainActivity extends ActionBarActivity {
 
     public void onClickStart(View v) {
         startService(intent);
+    }
+    public void onClickStop(View v) {
+        stopService(intent);
     }
 
     public void onClickUp(View v) {
