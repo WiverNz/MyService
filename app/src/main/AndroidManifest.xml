@@ -21,7 +21,11 @@
             android:name=".MyService"
             android:process=":remote"
             android:enabled="true"
+
             android:exported="true" >
+            <intent-filter>
+                <action android:name="service.Calculator" />
+            </intent-filter>
         </service>
     </application>
 

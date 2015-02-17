@@ -51,8 +51,8 @@ public class MyService extends Service {
     public final void onCreate() {
         super.onCreate();
         Log.d(mLogTag, "MyService onCreate");
-        mTimer = new Timer();
-        schedule();
+        //mTimer = new Timer();
+        //schedule();
     }
 
     /**

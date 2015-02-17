@@ -1,7 +1,9 @@
 package com.example.askibin.myservice;
 
-import android.support.v7.app.ActionBarActivity;
+import android.app.Service;
 import android.os.Bundle;
+import android.os.RemoteException;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.content.ComponentName;
@@ -11,11 +13,13 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * @since 1.0
  * Main activity class
  * http://www.compiletimeerror.com/2015/01/android-aidl-tutorial-with-example.html#.VOB3T9hoh5I
+ * http://habrahabr.ru/post/139432/
  */
 public class MainActivity extends ActionBarActivity {
     /**
@@ -30,9 +34,10 @@ public class MainActivity extends ActionBarActivity {
     private boolean mBound = false;
     /**
      * @since 1.0
-     * is bound captured
+     * add service
      */
-    ServiceConnection sConn;
+    protected IAdd AddService;
+    ServiceConnection AddServiceConnection;
     Intent intent;
     MyService myService;
     TextView tvInterval;
@@ -43,22 +48,38 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         tvInterval = (TextView) findViewById(R.id.tvInterval);
         intent = new Intent(this, MyService.class);
-        sConn = new ServiceConnection() {
-
-            public void onServiceConnected(final ComponentName name, final IBinder binder) {
-                Log.d(mLogTag, "MainActivity onServiceConnected");
-                myService = ((MyService.MyBinder) binder).getService();
-                mBound = true;
-            }
-
-            public void onServiceDisconnected(final ComponentName name) {
-                Log.d(mLogTag, "MainActivity onServiceDisconnected");
-                mBound = false;
-            }
-        };
+        initConnection();
     }
 
+    void initConnection() {
+        AddServiceConnection = new ServiceConnection() {
 
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                // TODO Auto-generated method stub
+                AddService = null;
+                Toast.makeText(getApplicationContext(), "Service Disconnected",
+                        Toast.LENGTH_SHORT).show();
+                Log.d("IRemote", "Binding - Service disconnected");
+            }
+
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                // TODO Auto-generated method stub
+                AddService = IAdd.Stub.asInterface((IBinder) service);
+                Toast.makeText(getApplicationContext(),
+                        "Addition Service Connected", Toast.LENGTH_SHORT)
+                        .show();
+                Log.d("IRemote", "Binding is done - Service connected");
+            }
+        };
+        if (AddService == null) {
+            Intent it = new Intent();
+            it.setAction("service.Calculator");
+            // binding to remote service
+            bindService(it, AddServiceConnection, Service.BIND_AUTO_CREATE);
+        }
+    }
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -80,18 +101,11 @@ public class MainActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
-    @Override
-    protected void onStart() {
-        super.onStart();
-        bindService(intent, sConn, 0);
-    }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        if (!bound) return;
-        unbindService(sConn);
-        bound = false;
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(AddServiceConnection);
     }
 
     public void onClickStart(final View v) {
@@ -102,14 +116,17 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void onClickUp(final View v) {
-        if (!mBound) return;
-        interval = myService.upInterval(500);
-        tvInterval.setText("interval = " + interval);
+        // TODO Auto-generated method stub
+        try {
+            Toast.makeText(getApplicationContext(),
+                    "result " + AddService.add(1, 1), Toast.LENGTH_SHORT)
+                    .show();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     public void onClickDown(final View v) {
-        if (!mBound) return;
-        interval = myService.downInterval(500);
-        tvInterval.setText("interval = " + interval);
+
     }
 }
