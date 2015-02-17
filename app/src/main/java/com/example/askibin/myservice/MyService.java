@@ -4,13 +4,13 @@ package com.example.askibin.myservice;
  * Created by askibin on 12.02.2015.
  */
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * @since 1.0

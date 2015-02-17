@@ -1,16 +1,16 @@
 package com.example.askibin.myservice;
 
 import android.app.Service;
-import android.os.Bundle;
-import android.os.RemoteException;
-import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Bundle;
 import android.os.IBinder;
+import android.os.RemoteException;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +37,8 @@ public class MainActivity extends ActionBarActivity {
      * add service
      */
     protected IAdd AddService;
+    protected IDataSourceService serviceApi;
+    protected IDataSourceServiceListener mainListener;
     ServiceConnection AddServiceConnection;
     Intent intent;
     MyService myService;
@@ -67,6 +69,26 @@ public class MainActivity extends ActionBarActivity {
             public void onServiceConnected(ComponentName name, IBinder service) {
                 // TODO Auto-generated method stub
                 AddService = IAdd.Stub.asInterface((IBinder) service);
+                serviceApi = IDataSourceService.Stub.asInterface(service);
+
+                try {
+                    mainListener = new IDataSourceServiceListener.Stub() {
+                        @Override
+                                public void albumItemLoaded(final int a) throws RemoteException {
+                            Toast.makeText(getApplicationContext(), "albumItemLoaded " + a,
+                                    Toast.LENGTH_SHORT).show();
+                            //mToastHandler.post(new Thread(){
+                            //    public void run(){
+                                    //Toast.makeText(HabrahabrAIDLExampleActivity.this, a.toString(), Toast.LENGTH_LONG).show();
+                                    //textView.setText(a.toString());
+                            //    }
+                            //});
+                        }
+                    };
+                    serviceApi.loadAlbums(mainListener);
+                } catch (RemoteException e) {
+                    Log.e(mLogTag, "loadAlbums", e);
+                }
                 Toast.makeText(getApplicationContext(),
                         "Addition Service Connected", Toast.LENGTH_SHORT)
                         .show();
