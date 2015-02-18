@@ -137,7 +137,7 @@ public class MainActivity extends ActionBarActivity {
         // TODO Auto-generated method stub
         try {
             Toast.makeText(getApplicationContext(),
-                    "result " + AddService.add(1, 1), Toast.LENGTH_SHORT)
+                    "result " + serviceApi.add(1, 1), Toast.LENGTH_SHORT)
                     .show();
         } catch (RemoteException e) {
             e.printStackTrace();

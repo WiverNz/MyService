@@ -139,6 +139,11 @@ public class MyService extends Service {
             }
             listener.albumItemLoaded(1);
         }
+
+        @Override
+        public int add(int num1, int num2) throws RemoteException {
+            return (num1 + num2);
+        }
     };
     /**
      * @param intent intent
