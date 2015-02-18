@@ -71,12 +71,12 @@ public class MainActivity extends ActionBarActivity {
                 AddService = IAdd.Stub.asInterface((IBinder) service);
                 serviceApi = IDataSourceService.Stub.asInterface(service);
 
-                try {
+
                     mainListener = new IDataSourceServiceListener.Stub() {
                         @Override
                                 public void albumItemLoaded(final int a) throws RemoteException {
-                            Toast.makeText(getApplicationContext(), "albumItemLoaded " + a,
-                                    Toast.LENGTH_SHORT).show();
+                            Log.d("IRemote", "albumItemLoaded" + a);
+                            //Toast.makeText(getApplicationContext(), "albumItemLoaded " + a, Toast.LENGTH_SHORT).show();
                             //mToastHandler.post(new Thread(){
                             //    public void run(){
                                     //Toast.makeText(HabrahabrAIDLExampleActivity.this, a.toString(), Toast.LENGTH_LONG).show();
@@ -85,10 +85,6 @@ public class MainActivity extends ActionBarActivity {
                             //});
                         }
                     };
-                    serviceApi.loadAlbums(mainListener);
-                } catch (RemoteException e) {
-                    Log.e(mLogTag, "loadAlbums", e);
-                }
                 Toast.makeText(getApplicationContext(),
                         "Addition Service Connected", Toast.LENGTH_SHORT)
                         .show();
@@ -149,6 +145,11 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void onClickDown(final View v) {
-
+        try {
+            serviceApi.loadAlbums(mainListener);
+            Log.d("IRemote", "loadAlbums");
+        } catch (RemoteException e) {
+            Log.e(mLogTag, "loadAlbums", e);
+        }
     }
 }

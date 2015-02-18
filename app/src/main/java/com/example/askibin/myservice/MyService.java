@@ -7,6 +7,7 @@ package com.example.askibin.myservice;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.util.Log;
 
 import java.util.Timer;
@@ -122,7 +123,23 @@ public class MyService extends Service {
             return (num1 + num2);
         }
     };
+    /**
+     * @since 1.0
+     * set mBinder
+     */
+    private final IDataSourceService.Stub mBinder2 = new IDataSourceService.Stub() {
 
+        @Override
+        public void loadAlbums(IDataSourceServiceListener listener) throws RemoteException {
+            try {
+                Thread.sleep(3000);
+                // Do some stuff
+            } catch (Exception e) {
+                e.getLocalizedMessage();
+            }
+            listener.albumItemLoaded(1);
+        }
+    };
     /**
      * @param intent intent
      * @return binder
@@ -131,6 +148,6 @@ public class MyService extends Service {
      */
     public final IBinder onBind(final Intent intent) {
         Log.d(mLogTag, "MyService onBind");
-        return mBinder;
+        return mBinder2;
     }
 }
